@@ -10,7 +10,8 @@ import Link from "next/link"
 export const ProductsInCart = () => {
 
     const [loaded, setLodaded] = useState(false)
-
+    const updateProductQuantity = useCartStore(state => state.updateProductQuantity)
+    const removeProduct = useCartStore(state => state.removeProduct)
     const productsInCart = useCartStore(state => state.cart)
 
     useEffect(() => {
@@ -38,19 +39,22 @@ export const ProductsInCart = () => {
                         />
 
                         <div>
-                            <Link 
-                            className="hover:underline cursor-pointer"
-                            href={`/product/${product.slug}`}
+                            <Link
+                                className="hover:underline cursor-pointer"
+                                href={`/product/${product.slug}`}
                             >
                                 {product.title}
                             </Link>
                             <p>${product.price}</p>
                             <QuantitySelector
-                                quantity={4}
-                                onQuantityChanged={value => console.log()}
+                                quantity={product.quantity}
+                                onQuantityChanged={quantity => updateProductQuantity(product, quantity)}
                             />
 
-                            <button className="underline mb-3">Remover</button>
+                            <button
+                                onClick={() => removeProduct(product)}
+                                className="underline mb-3"
+                            >Remover</button>
                         </div>
 
                     </div>
