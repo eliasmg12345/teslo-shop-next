@@ -1,6 +1,7 @@
 'use server';
 
 import { signIn } from '@/auth.config';
+import { sleep } from '@/utils';
 import { AuthError } from 'next-auth';
 
 // ...
@@ -10,19 +11,19 @@ export async function authenticate(
     formData: FormData,
 ) {
     try {
-        console.log('from login.ts', Object.fromEntries(formData));
+        await sleep(2)
+        await signIn('credentials', {
+            ...Object.fromEntries(formData),
+            redirect: false,
+        });
 
-        await signIn('credentials', formData);
+        return 'Success'
+
     } catch (error) {
-        return 'CredentialsSignin'
-        // if (error instanceof AuthError) {
-        //     switch (error.type) {
-        //         case 'CredentialsSignin':
-        //             return 'Invalid credentials.';
-        //         default:
-        //             return 'Something went wrong.';
-        //     }
-        // }
-        throw error;
+        if ((error as any).type === 'CredentialsSignin') {
+            return 'CredentialsSignin'
+        }
+
+        return 'UnknownError '
     }
 }

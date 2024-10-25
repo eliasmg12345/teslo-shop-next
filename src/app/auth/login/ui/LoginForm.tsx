@@ -1,19 +1,24 @@
 'use client'
 
 import { authenticate } from "@/actions"
+import clsx from "clsx"
 import Link from "next/link"
-import { useActionState } from "react"
-import { useFormState } from "react-dom"
+import { useRouter } from "next/navigation"
+import { useEffect } from "react"
+import { useFormState, useFormStatus } from "react-dom"
+import { IoInformationCircle } from "react-icons/io5"
 
 export const LoginForm = () => {
 
+    const router = useRouter()
     const [state, dispatch] = useFormState(authenticate, undefined)
-    console.log('state from login form', { state });
-
-    // const [errorMessage, formAction, isPending] = useActionState(
-    //     authenticate,
-    //     undefined,
-    //   );
+    
+    useEffect(()=>{
+        if (state==='Success') {
+            //redireccionar
+            router.replace('/')
+        }
+    },[state])
 
     return (
         // <form action={dispatch} className="flex flex-col">
@@ -34,11 +39,20 @@ export const LoginForm = () => {
                 name="password"
             />
 
-            <button
-                type="submit"
-                className="btn-primary">
-                Ingresar
-            </button>
+            <div
+                className="flex h-8 items-end space-x-1"
+                aria-live="polite"
+                aria-atomic="true"
+            >
+                {state === "CredentialsSignin" && (
+                    <div className="mb-2 flex flex-row">
+                        <IoInformationCircle className="h-5 2-5 text-red-500" />
+                        <p className="text-sm text-red-500">Invalid Credentials</p>
+                    </div>
+                )}
+            </div>
+
+            <LoginButton />
 
 
             {/* divisor l ine */}
@@ -55,5 +69,22 @@ export const LoginForm = () => {
             </Link>
 
         </form>
+    )
+}
+
+function LoginButton() {
+    const { pending } = useFormStatus()
+
+    return (
+        <button
+            type="submit"
+            className={clsx({
+                "btn-primary": !pending,
+                "btn-disabled": pending,
+            })}
+            disabled={pending}
+        >
+            Ingresar
+        </button>
     )
 }
