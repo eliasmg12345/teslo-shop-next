@@ -55,10 +55,10 @@ export const AddressForm = ({ countries, userStoreAddress = {} }: Props) => {
     }, [])
 
     const onSubmit = async (data: FormInputs) => {
-        console.log({ data });
 
-        setAddress(data)
         const { rememberAddress, ...restAddress } = data
+        
+        setAddress(restAddress)
 
         if (rememberAddress) {
             // todo: server action
