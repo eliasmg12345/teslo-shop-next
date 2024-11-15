@@ -6,18 +6,23 @@ import clsx from "clsx"
 import { useAddressStore, useCartStore } from "@/store"
 import { placeOrder } from "@/actions"
 import { currencyFormat, sleep } from "@/utils"
+import { useRouter } from "next/navigation"
 
 
 export const PlaceOrder = () => {
 
+  const router = useRouter()
+
   const [loaded, setLoaded] = useState(false)
   const [isPlacingOrder, setIsPlacingOrder] = useState(false)
+  const [errorMessage, setErrorMessage] = useState('')
 
   const address = useAddressStore(state => state.address)
 
   const { itemsInCart, subTotal, tax, total } = useCartStore(state => state.getSummaryInformation())
 
   const cart = useCartStore(state => state.cart)
+  const clearCart = useCartStore(state => state.clearCart)
 
   useEffect(() => {
     setLoaded(true)
@@ -36,12 +41,18 @@ export const PlaceOrder = () => {
     console.log({ address, productsToOrder });
 
 
-    //todo: server action
+    // Server action
     const resp = await placeOrder(productsToOrder, address)
-    console.log({resp});
-    
+    if (!resp.ok) {
+      setIsPlacingOrder(false)
+      setErrorMessage(resp.message)
+      return
+    }
 
-    setIsPlacingOrder(false)
+    //-> todo salió bien
+    clearCart()
+    router.replace('/orders/' + resp.order!.id)
+
   }
 
   if (!loaded) {
@@ -95,7 +106,7 @@ export const PlaceOrder = () => {
           </span>
         </p>
 
-        {/* <p className="text-red-500">Error de Creación</p> */}
+        <p className="text-red-500">{errorMessage}</p>
         <button
           onClick={onPlaceOrder}
           className={
