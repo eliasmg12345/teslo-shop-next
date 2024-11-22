@@ -50,9 +50,11 @@ export const PayPalButton = ({ orderId, amount }: Props) => {
     }
 
     return (
-        <PayPalButtons
-            createOrder={createOrder}
-        />
+        <div className="relative z-0">
+            <PayPalButtons
+                createOrder={createOrder}
+            />
+        </div>
     )
 
 }
