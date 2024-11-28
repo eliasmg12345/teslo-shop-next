@@ -1,14 +1,14 @@
-
 "use client";
 
 import { createUpdateProduct } from "@/actions";
 import { Category, Product, ProductImage, } from "@/interfaces";
 import clsx from "clsx";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 
 interface Props {
-    product: Product & { ProductImage?: ProductImage[] };
+    product: Partial<Product> & { ProductImage?: ProductImage[] };
     categories: Category[]
 }
 
@@ -26,10 +26,13 @@ interface FormInputs {
     categoryId: string
 
     //Images
+    images?: FileList
 
 }
 
 export const ProductForm = ({ product, categories }: Props) => {
+
+    const router = useRouter()
 
     const {
         handleSubmit,
@@ -41,10 +44,11 @@ export const ProductForm = ({ product, categories }: Props) => {
     } = useForm<FormInputs>({
         defaultValues: {
             ...product,
-            tags: product.tags.join(', '),
+            tags: product.tags?.join(', '),
             sizes: product.sizes ?? [],
 
             //todo: imagenes
+            images: undefined
         }
     })
 
@@ -64,9 +68,11 @@ export const ProductForm = ({ product, categories }: Props) => {
         //el FormData es propio de JS y nos va a servir para crear un objeto que es el formulario
         // que es el que quiero enviar
         const formData = new FormData()
-        const {...productToSave} = data
+        const { images, ...productToSave } = data
 
-        formData.append('id', product.id ?? '')
+        if (product.id) {
+            formData.append('id', product.id ?? '')
+        }
         formData.append('title', productToSave.title)
         formData.append('slug', productToSave.slug)
         formData.append('description', productToSave.description)
@@ -77,9 +83,21 @@ export const ProductForm = ({ product, categories }: Props) => {
         formData.append('categoryId', productToSave.categoryId)
         formData.append('gender', productToSave.gender)
 
-        const {ok} = await createUpdateProduct(formData)
-        console.log(ok);
-        
+        if (images) {
+            for (let i = 0; i < images.length; i++) {
+                formData.append('images', images[i])
+            }
+        }
+
+        const { ok, product: updatedProduct } = await createUpdateProduct(formData)
+
+        if (!ok) {
+            alert('Producto no se pudo actualizar')
+            return
+        }
+
+        router.replace(`/admin/product/${updatedProduct?.slug}`)
+
 
 
     }
@@ -150,6 +168,14 @@ export const ProductForm = ({ product, categories }: Props) => {
 
             {/* Selector de tallas y fotos */}
             <div className="w-full">
+
+                <div className="flex flex-col mb-2">
+                    <span>Inventario</span>
+                    <input type="number" className="p-2 border rounded-md bg-gray-200"
+                        {...register('inStock', { required: true, min: 0 })}
+                    />
+                </div>
+
                 {/* As checkboxes */}
                 <div className="flex flex-col">
 
@@ -184,9 +210,10 @@ export const ProductForm = ({ product, categories }: Props) => {
                         <span>Fotos</span>
                         <input
                             type="file"
+                            {...register('images')}
                             multiple
                             className="p-2 border rounded-md bg-gray-200"
-                            accept="image/png, image/jpeg"
+                            accept="image/png, image/jpeg, image/avif"
                         />
 
                     </div>

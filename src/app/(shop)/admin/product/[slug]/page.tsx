@@ -18,7 +18,7 @@ export default async function ProductPage({ params }: Props) {
     ])
 
     //todo: new
-    if (!product) {
+    if (!product && slug !== 'new') {
         redirect('/admin/products')
     }
 
@@ -29,8 +29,8 @@ export default async function ProductPage({ params }: Props) {
     return (
         <>
             <Title title={title} />
-
-            <ProductForm product={product} categories={categories} />
+                {/* que sea partial no significa que acepte null por eso ponemos ?? {} y cambiamos  en getProductBySLug a productImage a true */}
+            <ProductForm product={product ?? {}} categories={categories} />
         </>
     )
 }
