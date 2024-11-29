@@ -5,7 +5,6 @@ import { SubmitHandler, useForm } from "react-hook-form";
 
 import { login, registerUser } from "@/actions";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 
 type FormInputs = {
     name: string;

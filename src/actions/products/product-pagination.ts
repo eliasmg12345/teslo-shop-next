@@ -54,6 +54,7 @@ export const getPaginateProductsWithImages = async ({
             }))
         }
     } catch (error) {
-        throw new Error('NO se pudo cargar los productos')
+        console.log(error);
+        throw new Error('No se pudo cargar los productos')
     }
 }

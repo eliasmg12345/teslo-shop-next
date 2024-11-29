@@ -2,9 +2,6 @@
 
 import { signIn } from '@/auth.config';
 import { sleep } from '@/utils';
-import { AuthError } from 'next-auth';
-
-// ...
 
 export async function authenticate(
     prevState: string | undefined,
@@ -20,11 +17,8 @@ export async function authenticate(
         return 'Success'
 
     } catch (error) {
-        if ((error as any).type === 'CredentialsSignin') {
-            return 'CredentialsSignin'
-        }
-
-        return 'UnknownError '
+        console.log(error);
+        return 'CredentialsSignin'
     }
 }
 

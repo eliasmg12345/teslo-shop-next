@@ -5,7 +5,7 @@ import clsx from "clsx"
 
 import { useAddressStore, useCartStore } from "@/store"
 import { placeOrder } from "@/actions"
-import { currencyFormat, sleep } from "@/utils"
+import { currencyFormat } from "@/utils"
 import { useRouter } from "next/navigation"
 
 
@@ -45,7 +45,7 @@ export const PlaceOrder = () => {
     const resp = await placeOrder(productsToOrder, address)
     if (!resp.ok) {
       setIsPlacingOrder(false)
-      setErrorMessage(resp.message)
+      setErrorMessage('error en place-order')
       return
     }
 
@@ -102,8 +102,9 @@ export const PlaceOrder = () => {
         <p className="mb-5">
           {/* Disclaimer */}
           <span className="text-xs">
-            Al hacer click en "Colocar Orden", aceptas nuestros <a href="#" className="underline">términos y condiciones</a> y <a href="#" className="underline">política de privacidad</a>
+            Al hacer click en &quot;Colocar Orden&quot;, aceptas nuestros <a href="#" className="underline">términos y condiciones</a> y <a href="#" className="underline">política de privacidad</a>
           </span>
+
         </p>
 
         <p className="text-red-500">{errorMessage}</p>

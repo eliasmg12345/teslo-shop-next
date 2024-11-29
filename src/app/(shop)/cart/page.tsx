@@ -1,6 +1,5 @@
 import { Title } from "@/components";
 import Link from "next/link";
-import { redirect } from "next/navigation";
 import { ProductsInCart } from "./ui/ProductsInCart";
 import { OrderSumary } from "./ui/OrderSumary";
 

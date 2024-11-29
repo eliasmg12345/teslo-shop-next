@@ -3,7 +3,6 @@
 import { authenticate } from "@/actions"
 import clsx from "clsx"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
 import { useEffect } from "react"
 import { useFormState, useFormStatus } from "react-dom"
 import { IoInformationCircle } from "react-icons/io5"

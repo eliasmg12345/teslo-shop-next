@@ -22,7 +22,7 @@ export default async function GenderByPage({ searchParams, params }: Props) {
 
   const page = searchParams.page ? parseInt(searchParams.page) : 1
 
-  const { products, currentPage, totalPages } = await getPaginateProductsWithImages({
+  const { products, totalPages } = await getPaginateProductsWithImages({
     page,
     gender: gender as Gender,
   })

@@ -15,16 +15,16 @@ export const StockLabel = ({ slug }: Props) => {
 
 
     useEffect(() => {
+        const getStock = async () => {
+            //llamar server actions
+            const inStock = await getStockBySlug(slug)
+
+            setStock(inStock)
+            setIsLoading(false)
+        }
+
         getStock()
-    }, [])
-
-    const getStock = async () => {
-        //llamar server actions
-        const inStock = await getStockBySlug(slug)
-
-        setStock(inStock)
-        setIsLoading(false)
-    }
+    }, [slug])
 
     return (
         <>
